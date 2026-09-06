@@ -1,24 +1,29 @@
-package br.edu.insper.campeonato;
-
-import java.util.ArrayList;
+package br.edu.insper.campeonato.model;
 
 public class Jogador {
+
+    private final Long id;
     private String nome;
     private int numero;
     private String posicao;
     private Time time;
     private int idade;
 
-    public Jogador(String nome, int numero, String posicao, Time time, int idade) {
+    public Jogador(Long id, String nome, int numero, String posicao, int idade) {
+        this.id = id;
         this.nome = nome;
         this.numero = numero;
         this.posicao = posicao;
-        this.time = time;
+        this.time = null;
         this.idade = idade;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public int getIdade() {
-        return this.idade;
+        return idade;
     }
 
     public void setIdade(int idade) {
@@ -26,7 +31,7 @@ public class Jogador {
     }
 
     public String getNome() {
-        return this.nome;
+        return nome;
     }
 
     public void setNome(String nome) {
@@ -34,7 +39,7 @@ public class Jogador {
     }
 
     public int getNumero() {
-        return this.numero;
+        return numero;
     }
 
     public void setNumero(int numero) {
@@ -42,7 +47,7 @@ public class Jogador {
     }
 
     public Time getTime() {
-        return this.time;
+        return time;
     }
 
     public void setTime(Time time) {
