@@ -1,4 +1,4 @@
-package br.edu.insper.lojavirtual;
+package br.edu.insper.lojavirtual.models;
 
 public class Produto {
     private int codigo;

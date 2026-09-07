@@ -1,10 +1,14 @@
-package br.edu.insper.lojavirtual;
+package br.edu.insper.lojavirtual.models;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
 
 public class Categoria {
     private int codigo;
     private String nome;
+
+    @JsonIgnore
     private ArrayList<Produto> produtos;
 
     public Categoria(int codigo, String nome) {
