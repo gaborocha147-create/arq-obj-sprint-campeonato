@@ -1,7 +1,7 @@
 package br.edu.insper.lojavirtual.controller;
 
-import br.edu.insper.lojavirtual.dto.BancoDeDados;
-import br.edu.insper.lojavirtual.dto.PedidoResumoResponse;
+import br.edu.insper.lojavirtual.utils.BancoDeDados;
+import br.edu.insper.lojavirtual.view.PedidoResumoView;
 import br.edu.insper.lojavirtual.utils.ValidarCpf;
 import br.edu.insper.lojavirtual.models.Cliente;
 import br.edu.insper.lojavirtual.models.Pedido;
@@ -51,9 +51,9 @@ public class ClienteController {
                     .body("Cliente com CPF " + cpf + " não encontrado.");
         }
 
-        List<PedidoResumoResponse> resposta = new ArrayList<>();
+        List<PedidoResumoView> resposta = new ArrayList<>();
         for (Pedido pedido : cliente.getPedidos()) {
-            resposta.add(new PedidoResumoResponse(pedido));
+            resposta.add(new PedidoResumoView(pedido));
         }
 
         return ResponseEntity.ok(resposta);

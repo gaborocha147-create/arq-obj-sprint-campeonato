@@ -1,6 +1,6 @@
 package br.edu.insper.lojavirtual.controller;
 
-import br.edu.insper.lojavirtual.dto.BancoDeDados;
+import br.edu.insper.lojavirtual.utils.BancoDeDados;
 import br.edu.insper.lojavirtual.models.Categoria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

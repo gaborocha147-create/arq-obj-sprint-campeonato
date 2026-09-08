@@ -1,4 +1,4 @@
-package br.edu.insper.lojavirtual.dto;
+package br.edu.insper.lojavirtual.view;
 
 import br.edu.insper.lojavirtual.models.ItemPedido;
 import br.edu.insper.lojavirtual.models.Pedido;
@@ -6,21 +6,21 @@ import br.edu.insper.lojavirtual.models.Pedido;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PedidoResponse {
+public class PedidoView {
     private int numero;
     private String cpfCliente;
     private String status;
-    private List<ItemPedidoResponse> itens;
+    private List<ItemPedidoView> itens;
     private double valorTotal;
 
-    public PedidoResponse(Pedido pedido) {
+    public PedidoView(Pedido pedido) {
         this.numero = pedido.getNumero();
         this.cpfCliente = pedido.getCliente().getCpf();
         this.status = pedido.getStatus();
 
         this.itens = new ArrayList<>();
         for (ItemPedido item : pedido.getItens()) {
-            this.itens.add(new ItemPedidoResponse(item));
+            this.itens.add(new ItemPedidoView(item));
         }
 
         this.valorTotal = pedido.calcularTotal();
@@ -38,7 +38,7 @@ public class PedidoResponse {
         return status;
     }
 
-    public List<ItemPedidoResponse> getItens() {
+    public List<ItemPedidoView> getItens() {
         return itens;
     }
 

@@ -1,6 +1,6 @@
-package br.edu.insper.lojavirtual.dto;
+package br.edu.insper.lojavirtual.view;
 
-public class ItemPedidoRequest {
+public class NovoItemPedidoView {
     private int produtoCodigo;
     private int quantidade;
 

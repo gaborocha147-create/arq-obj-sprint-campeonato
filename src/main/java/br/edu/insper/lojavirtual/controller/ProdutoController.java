@@ -1,8 +1,8 @@
 package br.edu.insper.lojavirtual.controller;
 
 
-import br.edu.insper.lojavirtual.dto.BancoDeDados;
-import br.edu.insper.lojavirtual.dto.ProdutoRequest;
+import br.edu.insper.lojavirtual.utils.BancoDeDados;
+import br.edu.insper.lojavirtual.view.NovoProdutoView;
 import br.edu.insper.lojavirtual.models.Categoria;
 import br.edu.insper.lojavirtual.models.Produto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class ProdutoController {
     private BancoDeDados bancoDeDados;
 
     @PostMapping
-    public ResponseEntity<?> cadastrar(@RequestBody ProdutoRequest request) {
+    public ResponseEntity<?> cadastrar(@RequestBody NovoProdutoView request) {
         Categoria categoria = bancoDeDados.buscarCategoriaPorCodigo(request.getCategoriaId());
 
         if (categoria == null) {

@@ -1,6 +1,6 @@
-package br.edu.insper.lojavirtual.dto;
+package br.edu.insper.lojavirtual.view;
 
-public class PedidoRequest {
+public class NovoPedidoView {
     private String cpfCliente;
 
     public String getCpfCliente() {

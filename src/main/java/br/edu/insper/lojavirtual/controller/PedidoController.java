@@ -1,6 +1,7 @@
 package br.edu.insper.lojavirtual.controller;
 
-import br.edu.insper.lojavirtual.dto.*;
+import br.edu.insper.lojavirtual.utils.BancoDeDados;
+import br.edu.insper.lojavirtual.view.*;
 import br.edu.insper.lojavirtual.models.Cliente;
 import br.edu.insper.lojavirtual.models.Pedido;
 import br.edu.insper.lojavirtual.models.Produto;
@@ -21,7 +22,7 @@ public class PedidoController {
     private BancoDeDados bancoDeDados;
 
     @PostMapping
-    public ResponseEntity<?> criar(@RequestBody PedidoRequest request) {
+    public ResponseEntity<?> criar(@RequestBody NovoPedidoView request) {
         Cliente cliente = bancoDeDados.buscarClientePorCpf(request.getCpfCliente());
 
         if (cliente == null) {
@@ -33,11 +34,11 @@ public class PedidoController {
         bancoDeDados.getPedidos().add(pedido);
         cliente.adicionarPedido(pedido);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new PedidoResponse(pedido));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new PedidoView(pedido));
     }
 
     @PostMapping("/{id}/itens")
-    public ResponseEntity<?> adicionarItem(@PathVariable int id, @RequestBody ItemPedidoRequest request) {
+    public ResponseEntity<?> adicionarItem(@PathVariable int id, @RequestBody NovoItemPedidoView request) {
         Pedido pedido = bancoDeDados.buscarPedidoPorNumero(id);
 
         if (pedido == null) {
@@ -67,11 +68,11 @@ public class PedidoController {
         // produto não afetam este item.
         pedido.adicionarProduto(produto, request.getQuantidade());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new PedidoResponse(pedido));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new PedidoView(pedido));
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<?> alterarStatus(@PathVariable int id, @RequestBody StatusRequest request) {
+    public ResponseEntity<?> alterarStatus(@PathVariable int id, @RequestBody StatusView request) {
         Pedido pedido = bancoDeDados.buscarPedidoPorNumero(id);
 
         if (pedido == null) {
@@ -86,6 +87,6 @@ public class PedidoController {
 
         pedido.alterarStatus(request.getStatus());
 
-        return ResponseEntity.ok(new PedidoResponse(pedido));
+        return ResponseEntity.ok(new PedidoView(pedido));
     }
 }

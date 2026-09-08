@@ -1,6 +1,6 @@
-package br.edu.insper.lojavirtual.dto;
+package br.edu.insper.lojavirtual.view;
 
-public class StatusRequest {
+public class StatusView {
     private String status;
 
     public String getStatus() {

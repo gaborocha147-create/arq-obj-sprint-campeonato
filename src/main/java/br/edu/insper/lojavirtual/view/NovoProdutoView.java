@@ -1,6 +1,6 @@
-package br.edu.insper.lojavirtual.dto;
+package br.edu.insper.lojavirtual.view;
 
-public class ProdutoRequest {
+public class NovoProdutoView {
     private String nome;
     private double preco;
     private int categoriaId;

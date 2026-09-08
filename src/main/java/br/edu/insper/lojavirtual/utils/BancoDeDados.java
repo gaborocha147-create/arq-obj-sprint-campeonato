@@ -1,4 +1,4 @@
-package br.edu.insper.lojavirtual.dto;
+package br.edu.insper.lojavirtual.utils;
 
 import br.edu.insper.lojavirtual.models.Categoria;
 import br.edu.insper.lojavirtual.models.Cliente;

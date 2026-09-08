@@ -1,14 +1,14 @@
-package br.edu.insper.lojavirtual.dto;
+package br.edu.insper.lojavirtual.view;
 
 import br.edu.insper.lojavirtual.models.ItemPedido;
 
-public class ItemPedidoResponse {
+public class ItemPedidoView {
     private String produtoNome;
     private int quantidade;
     private double precoUnitario;
     private double subtotal;
 
-    public ItemPedidoResponse(ItemPedido item) {
+    public ItemPedidoView(ItemPedido item) {
         this.produtoNome = item.getProduto().getNome();
         this.quantidade = item.getQuantidade();
         this.precoUnitario = item.getPrecoUnitario();
