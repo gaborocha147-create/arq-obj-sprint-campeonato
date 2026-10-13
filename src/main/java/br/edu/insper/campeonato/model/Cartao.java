@@ -1,32 +1,65 @@
 package br.edu.insper.campeonato.model;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Cartao {
 
-    private final Long id;
-    private final TipoCartao tipo;
-    private final Jogador jogador;
-    private final int minuto;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public Cartao(Long id, TipoCartao tipo, Jogador jogador, int minuto) {
-        this.id = id;
-        this.tipo = tipo;
-        this.jogador = jogador;
-        this.minuto = minuto;
-    }
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TipoCartao tipo;
+
+    @ManyToOne
+    @JoinColumn(name = "id_jogador")
+    private Jogador jogador;
+
+    @ManyToOne
+    @JoinColumn(name = "id_partida")
+    private Partida partida;
+
+    private int minuto;
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public TipoCartao getTipo() {
         return tipo;
     }
 
+    public void setTipo(TipoCartao tipo) {
+        this.tipo = tipo;
+    }
+
     public Jogador getJogador() {
         return jogador;
     }
 
+    public void setJogador(Jogador jogador) {
+        this.jogador = jogador;
+    }
+
+    public Partida getPartida() {
+        return partida;
+    }
+
+    public void setPartida(Partida partida) {
+        this.partida = partida;
+    }
+
     public int getMinuto() {
         return minuto;
+    }
+
+    public void setMinuto(int minuto) {
+        this.minuto = minuto;
     }
 }

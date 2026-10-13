@@ -1,30 +1,38 @@
 package br.edu.insper.campeonato.model;
 
-import java.util.ArrayList;
+import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
 public class Partida {
 
-    private final Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
     private String data;
+
+    @ManyToOne
+    @JoinColumn(name = "id_time_mandante")
     private Time timeMandante;
+
+    @ManyToOne
+    @JoinColumn(name = "id_time_visitante")
     private Time timeVisitante;
+
     private int golMandante;
     private int golVisitante;
     private boolean placarDefinido;
-    private ArrayList<Cartao> cartoes;
-    private Campeonato campeonato;
 
-    public Partida(Long id, String data, Time timeMandante, Time timeVisitante, Campeonato campeonato) {
-        this.id = id;
-        this.data = data;
-        this.timeMandante = timeMandante;
-        this.timeVisitante = timeVisitante;
-        this.golMandante = 0;
-        this.golVisitante = 0;
-        this.placarDefinido = false;
-        this.cartoes = new ArrayList<>();
-        this.campeonato = campeonato;
-    }
+    @OneToMany(mappedBy = "partida")
+    private List<Cartao> cartoes = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "id_campeonato")
+    private Campeonato campeonato;
 
     public void registrarGols(int golMandante, int golVisitante) {
         if (golMandante < 0 || golVisitante < 0) {
@@ -36,6 +44,7 @@ public class Partida {
     }
 
     public void registrarCartao(Cartao cartao) {
+        cartao.setPartida(this);
         cartoes.add(cartao);
     }
 
@@ -51,11 +60,19 @@ public class Partida {
     }
 
     public boolean jogadorParticipou(Jogador jogador) {
-        return jogador.getTime() == timeMandante || jogador.getTime() == timeVisitante;
+        if (jogador.getTime() == null) {
+            return false;
+        }
+        Long idTime = jogador.getTime().getId();
+        return idTime.equals(timeMandante.getId()) || idTime.equals(timeVisitante.getId());
     }
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getData() {
@@ -86,19 +103,31 @@ public class Partida {
         return golMandante;
     }
 
+    public void setGolMandante(int golMandante) {
+        this.golMandante = golMandante;
+    }
+
     public int getGolVisitante() {
         return golVisitante;
+    }
+
+    public void setGolVisitante(int golVisitante) {
+        this.golVisitante = golVisitante;
     }
 
     public boolean isPlacarDefinido() {
         return placarDefinido;
     }
 
-    public ArrayList<Cartao> getCartoes() {
+    public void setPlacarDefinido(boolean placarDefinido) {
+        this.placarDefinido = placarDefinido;
+    }
+
+    public List<Cartao> getCartoes() {
         return cartoes;
     }
 
-    public void setCartoes(ArrayList<Cartao> cartoes) {
+    public void setCartoes(List<Cartao> cartoes) {
         this.cartoes = cartoes;
     }
 

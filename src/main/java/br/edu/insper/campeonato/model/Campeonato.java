@@ -1,27 +1,37 @@
 package br.edu.insper.campeonato.model;
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
+@Entity
 public class Campeonato {
 
-    private final Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
     private String nome;
     private int ano;
-    private ArrayList<Time> times;
-    private ArrayList<Partida> partidas;
 
-    public Campeonato(Long id, String nome, int ano) {
-        this.id = id;
-        this.nome = nome;
-        this.ano = ano;
-        this.times = new ArrayList<>();
-        this.partidas = new ArrayList<>();
-    }
+    @ManyToMany
+    @JoinTable(
+            name = "campeonato_time",
+            joinColumns = @JoinColumn(name = "id_campeonato"),
+            inverseJoinColumns = @JoinColumn(name = "id_time")
+    )
+    private List<Time> times = new ArrayList<>();
+
+    @OneToMany(mappedBy = "campeonato")
+    private List<Partida> partidas = new ArrayList<>();
 
     public void adicionarTime(Time time) {
-        if (!times.contains(time)) {
+        boolean jaExiste = times.stream().anyMatch(t -> t.getId().equals(time.getId()));
+        if (!jaExiste) {
             times.add(time);
         }
     }
@@ -55,8 +65,8 @@ public class Campeonato {
                 continue;
             }
 
-            boolean mandante = partida.getTimeMandante() == time;
-            boolean visitante = partida.getTimeVisitante() == time;
+            boolean mandante = partida.getTimeMandante().getId().equals(time.getId());
+            boolean visitante = partida.getTimeVisitante().getId().equals(time.getId());
             if (!mandante && !visitante) {
                 continue;
             }
@@ -75,6 +85,10 @@ public class Campeonato {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getNome() {
         return nome;
     }
@@ -91,19 +105,19 @@ public class Campeonato {
         this.ano = ano;
     }
 
-    public ArrayList<Time> getTimes() {
+    public List<Time> getTimes() {
         return times;
     }
 
-    public void setTimes(ArrayList<Time> times) {
+    public void setTimes(List<Time> times) {
         this.times = times;
     }
 
-    public ArrayList<Partida> getPartidas() {
+    public List<Partida> getPartidas() {
         return partidas;
     }
 
-    public void setPartidas(ArrayList<Partida> partidas) {
+    public void setPartidas(List<Partida> partidas) {
         this.partidas = partidas;
     }
 }

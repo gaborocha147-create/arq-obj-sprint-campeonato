@@ -1,23 +1,34 @@
 package br.edu.insper.campeonato.model;
 
-import java.util.ArrayList;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "times")
 public class Time {
 
-    private final Long id;
-    private String nome;
-    private String cidade;
-    private ArrayList<Jogador> jogadores;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public Time(Long id, String nome, String cidade) {
-        this.id = id;
-        this.nome = nome;
-        this.cidade = cidade;
-        this.jogadores = new ArrayList<>();
-    }
+    @Column(nullable = false)
+    private String nome;
+    @Column(nullable = false)
+    private String cidade;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "time")
+    private List<Jogador> jogadores = new ArrayList<>();
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -65,11 +76,11 @@ public class Time {
         return soma / jogadores.size();
     }
 
-    public ArrayList<Jogador> getJogadores() {
+    public List<Jogador> getJogadores() {
         return jogadores;
     }
 
-    public void setJogadores(ArrayList<Jogador> jogadores) {
+    public void setJogadores(List<Jogador> jogadores) {
         this.jogadores = jogadores;
     }
 }

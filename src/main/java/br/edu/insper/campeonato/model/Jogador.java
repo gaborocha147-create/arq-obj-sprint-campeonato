@@ -1,25 +1,31 @@
 package br.edu.insper.campeonato.model;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Jogador {
 
-    private final Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
     private String nome;
     private int numero;
+    @Column(nullable = false)
     private String posicao;
-    private Time time;
     private int idade;
 
-    public Jogador(Long id, String nome, int numero, String posicao, int idade) {
-        this.id = id;
-        this.nome = nome;
-        this.numero = numero;
-        this.posicao = posicao;
-        this.time = null;
-        this.idade = idade;
-    }
+    @ManyToOne
+    @JoinColumn(name = "id_time")
+    private Time time;
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public int getIdade() {
