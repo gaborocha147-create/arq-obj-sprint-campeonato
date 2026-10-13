@@ -1,21 +1,24 @@
 package br.edu.insper.lojavirtual.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
+@Entity
 public class Categoria {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int codigo;
+
+    @Column(nullable = false)
     private String nome;
 
     @JsonIgnore
-    private ArrayList<Produto> produtos;
-
-    public Categoria(int codigo, String nome) {
-        this.codigo = codigo;
-        this.nome = nome;
-        this.produtos = new ArrayList<>();
-    }
+    @OneToMany(mappedBy = "categoria")
+    private List<Produto> produtos = new ArrayList<>();
 
     public int getCodigo() {
         return codigo;
@@ -33,11 +36,11 @@ public class Categoria {
         this.nome = nome;
     }
 
-    public ArrayList<Produto> getProdutos() {
+    public List<Produto> getProdutos() {
         return produtos;
     }
 
-    public void setProdutos(ArrayList<Produto> produtos) {
+    public void setProdutos(List<Produto> produtos) {
         this.produtos = produtos;
     }
 
@@ -45,7 +48,7 @@ public class Categoria {
         this.produtos.add(produto);
     }
 
-    public ArrayList<Produto> listarProdutos() {
+    public List<Produto> listarProdutos() {
         return this.produtos;
     }
 
@@ -55,10 +58,9 @@ public class Categoria {
         }
 
         double soma = 0;
-        for (Produto produto: this.produtos) {
+        for (Produto produto : this.produtos) {
             soma += produto.getPreco();
         }
-
         return soma / this.produtos.size();
     }
 
@@ -68,13 +70,11 @@ public class Categoria {
         }
 
         Produto maisCaro = this.produtos.get(0);
-        for (Produto produto: this.produtos) {
+        for (Produto produto : this.produtos) {
             if (produto.getPreco() > maisCaro.getPreco()) {
                 maisCaro = produto;
             }
         }
-
         return maisCaro;
     }
-
 }

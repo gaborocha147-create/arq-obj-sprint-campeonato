@@ -1,19 +1,25 @@
 package br.edu.insper.lojavirtual.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
+import java.util.List;
 
+@Entity
 public class Cliente {
-    private String nome;
-    private String cpf;
-    private String email;
-    private ArrayList<Pedido> pedidos;
 
-    public Cliente(String nome, String cpf, String email) {
-        this.nome = nome;
-        this.cpf = cpf;
-        this.email = email;
-        this.pedidos = new ArrayList<>();
-    }
+    @Id
+    private String cpf;
+
+    @Column(nullable = false)
+    private String nome;
+
+    private String email;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "cliente")
+    private List<Pedido> pedidos = new ArrayList<>();
 
     public String getNome() {
         return nome;
@@ -39,11 +45,11 @@ public class Cliente {
         this.email = email;
     }
 
-    public ArrayList<Pedido> getPedidos() {
+    public List<Pedido> getPedidos() {
         return pedidos;
     }
 
-    public void setPedidos(ArrayList<Pedido> pedidos) {
+    public void setPedidos(List<Pedido> pedidos) {
         this.pedidos = pedidos;
     }
 
@@ -51,14 +57,13 @@ public class Cliente {
         this.pedidos.add(pedido);
     }
 
-    public ArrayList<Pedido> listarPedidos() {
+    public List<Pedido> listarPedidos() {
         return this.pedidos;
     }
 
     public double calcularTotalGasto() {
         double total = 0;
-
-        for (Pedido pedido: this.pedidos) {
+        for (Pedido pedido : this.pedidos) {
             total += pedido.calcularTotal();
         }
         return total;
@@ -70,13 +75,11 @@ public class Cliente {
         }
 
         Pedido maisCaro = this.pedidos.get(0);
-        for (Pedido pedido: this.pedidos) {
+        for (Pedido pedido : this.pedidos) {
             if (pedido.calcularTotal() > maisCaro.calcularTotal()) {
                 maisCaro = pedido;
             }
         }
-
         return maisCaro;
     }
-
 }

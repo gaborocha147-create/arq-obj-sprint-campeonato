@@ -1,16 +1,15 @@
 package br.edu.insper.lojavirtual.controller;
 
-
-import br.edu.insper.lojavirtual.utils.BancoDeDados;
-import br.edu.insper.lojavirtual.view.NovoProdutoView;
 import br.edu.insper.lojavirtual.models.Categoria;
 import br.edu.insper.lojavirtual.models.Produto;
+import br.edu.insper.lojavirtual.service.CategoriaService;
+import br.edu.insper.lojavirtual.service.ProdutoService;
+import br.edu.insper.lojavirtual.view.NovoProdutoView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -18,44 +17,34 @@ import java.util.List;
 public class ProdutoController {
 
     @Autowired
-    private BancoDeDados bancoDeDados;
+    private ProdutoService produtoService;
+
+    @Autowired
+    private CategoriaService categoriaService;
 
     @PostMapping
     public ResponseEntity<?> cadastrar(@RequestBody NovoProdutoView request) {
-        Categoria categoria = bancoDeDados.buscarCategoriaPorCodigo(request.getCategoriaId());
+        Categoria categoria = categoriaService.buscarPorCodigo(request.getCategoriaId());
 
         if (categoria == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Categoria com código " + request.getCategoriaId() + " não encontrada.");
         }
 
-        Produto produto = new Produto(
-                bancoDeDados.gerarCodigoProduto(),
-                request.getNome(),
-                request.getPreco(),
-                categoria
-        );
-
-        bancoDeDados.getProdutos().add(produto);
-        categoria.adicionarProduto(produto);
+        Produto produto = new Produto();
+        produto.setNome(request.getNome());
+        produto.setPreco(request.getPreco());
+        produto.setCategoria(categoria);
+        produto = produtoService.salvar(produto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(produto);
     }
 
     @GetMapping
-    public ResponseEntity<List<Produto>> listar(
-            @RequestParam(required = false) Integer categoriaId) {
-
+    public ResponseEntity<List<Produto>> listar(@RequestParam(required = false) Integer categoriaId) {
         if (categoriaId == null) {
-            return ResponseEntity.ok(bancoDeDados.getProdutos());
+            return ResponseEntity.ok(produtoService.listar());
         }
-
-        List<Produto> filtrados = new ArrayList<>();
-        for (Produto produto : bancoDeDados.getProdutos()) {
-            if (produto.getCategoria().getCodigo() == categoriaId) {
-                filtrados.add(produto);
-            }
-        }
-        return ResponseEntity.ok(filtrados);
+        return ResponseEntity.ok(produtoService.listarPorCategoria(categoriaId));
     }
 }

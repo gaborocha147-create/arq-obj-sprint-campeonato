@@ -1,19 +1,26 @@
 package br.edu.insper.lojavirtual.models;
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
+import java.util.List;
 
+@Entity
 public class Pedido {
-    private int numero;
-    private Cliente cliente;
-    private ArrayList<ItemPedido> itens;
-    private String status;
 
-    public Pedido(int numero, Cliente cliente) {
-        this.numero = numero;
-        this.cliente = cliente;
-        this.itens = new ArrayList<>();
-        this.status = "ABERTO";
-    }
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int numero;
+
+    @ManyToOne
+    @JoinColumn(name = "cpf_cliente")
+    private Cliente cliente;
+
+    @OneToMany(mappedBy = "pedido")
+    private List<ItemPedido> itens = new ArrayList<>();
+
+    @Column(nullable = false)
+    private String status = "ABERTO";
 
     public int getNumero() {
         return numero;
@@ -31,11 +38,11 @@ public class Pedido {
         this.cliente = cliente;
     }
 
-    public ArrayList<ItemPedido> getItens() {
+    public List<ItemPedido> getItens() {
         return itens;
     }
 
-    public void setItens(ArrayList<ItemPedido> itens) {
+    public void setItens(List<ItemPedido> itens) {
         this.itens = itens;
     }
 
@@ -47,15 +54,20 @@ public class Pedido {
         this.status = status;
     }
 
-    public void adicionarProduto(Produto produto, int quantidade) {
-        ItemPedido novoItem = new ItemPedido(produto, quantidade, produto.getPreco());
-        this.itens.add(novoItem);
+    public ItemPedido adicionarProduto(Produto produto, int quantidade) {
+        ItemPedido item = new ItemPedido();
+        item.setProduto(produto);
+        item.setQuantidade(quantidade);
+        item.setPrecoUnitario(produto.getPreco()); // preço "congelado" no momento da compra
+        item.setPedido(this);
+        this.itens.add(item);
+        return item;
     }
 
     public void removerProduto(Produto produto) {
         ItemPedido itemParaRemover = null;
-        for (ItemPedido item: this.itens) {
-            if (item.getProduto().equals(produto)) {
+        for (ItemPedido item : this.itens) {
+            if (item.getProduto().getCodigo() == produto.getCodigo()) {
                 itemParaRemover = item;
                 break;
             }
@@ -67,21 +79,17 @@ public class Pedido {
 
     public double calcularTotal() {
         double total = 0;
-
-        for (ItemPedido item: this.itens) {
+        for (ItemPedido item : this.itens) {
             total += item.calcularSubtotal();
         }
-
         return total;
     }
 
     public int calcularQuantidadeItens() {
         int quantidade = 0;
-
-        for (ItemPedido item: this.itens) {
+        for (ItemPedido item : this.itens) {
             quantidade += item.getQuantidade();
         }
-
         return quantidade;
     }
 
@@ -91,17 +99,15 @@ public class Pedido {
         }
 
         ItemPedido maisCaro = this.itens.get(0);
-        for (ItemPedido item: this.itens) {
+        for (ItemPedido item : this.itens) {
             if (item.getPrecoUnitario() > maisCaro.getPrecoUnitario()) {
                 maisCaro = item;
             }
         }
-
         return maisCaro;
     }
 
     public void alterarStatus(String status) {
         this.status = status;
     }
-
 }

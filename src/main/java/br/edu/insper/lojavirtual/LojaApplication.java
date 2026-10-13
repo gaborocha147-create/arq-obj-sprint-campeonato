@@ -7,7 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class LojaApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(br.edu.insper.lojavirtual.LojaApplication.class, args);
+        // banco separado do campeonato (data/loja)
+        SpringApplication.run(LojaApplication.class,
+                "--spring.datasource.url=jdbc:h2:file:./data/loja",
+                "--spring.application.name=lojavirtual");
     }
 
 }

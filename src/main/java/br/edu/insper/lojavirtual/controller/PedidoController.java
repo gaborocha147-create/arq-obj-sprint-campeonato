@@ -1,10 +1,12 @@
 package br.edu.insper.lojavirtual.controller;
 
-import br.edu.insper.lojavirtual.utils.BancoDeDados;
-import br.edu.insper.lojavirtual.view.*;
 import br.edu.insper.lojavirtual.models.Cliente;
 import br.edu.insper.lojavirtual.models.Pedido;
 import br.edu.insper.lojavirtual.models.Produto;
+import br.edu.insper.lojavirtual.service.ClienteService;
+import br.edu.insper.lojavirtual.service.PedidoService;
+import br.edu.insper.lojavirtual.service.ProdutoService;
+import br.edu.insper.lojavirtual.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,30 +18,34 @@ import java.util.List;
 @RestController
 @RequestMapping("/pedidos")
 public class PedidoController {
+
     private static final List<String> STATUS_VALIDOS = Arrays.asList("ABERTO", "PAGO", "CANCELADO");
 
     @Autowired
-    private BancoDeDados bancoDeDados;
+    private PedidoService pedidoService;
+
+    @Autowired
+    private ClienteService clienteService;
+
+    @Autowired
+    private ProdutoService produtoService;
 
     @PostMapping
     public ResponseEntity<?> criar(@RequestBody NovoPedidoView request) {
-        Cliente cliente = bancoDeDados.buscarClientePorCpf(request.getCpfCliente());
+        Cliente cliente = clienteService.buscarPorCpf(request.getCpfCliente());
 
         if (cliente == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Cliente com CPF " + request.getCpfCliente() + " não encontrado.");
         }
 
-        Pedido pedido = new Pedido(bancoDeDados.gerarNumeroPedido(), cliente);
-        bancoDeDados.getPedidos().add(pedido);
-        cliente.adicionarPedido(pedido);
-
+        Pedido pedido = pedidoService.criar(cliente);
         return ResponseEntity.status(HttpStatus.CREATED).body(new PedidoView(pedido));
     }
 
     @PostMapping("/{id}/itens")
     public ResponseEntity<?> adicionarItem(@PathVariable int id, @RequestBody NovoItemPedidoView request) {
-        Pedido pedido = bancoDeDados.buscarPedidoPorNumero(id);
+        Pedido pedido = pedidoService.buscarPorNumero(id);
 
         if (pedido == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -51,7 +57,7 @@ public class PedidoController {
                     .body("Não é possível adicionar itens a um pedido com status " + pedido.getStatus() + ".");
         }
 
-        Produto produto = bancoDeDados.buscarProdutoPorCodigo(request.getProdutoCodigo());
+        Produto produto = produtoService.buscarPorCodigo(request.getProdutoCodigo());
 
         if (produto == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -63,17 +69,15 @@ public class PedidoController {
                     .body("Quantidade deve ser maior que zero.");
         }
 
-        // pedido.adicionarProduto já captura produto.getPreco() no momento da chamada
-        // e guarda esse valor dentro do ItemPedido -- mudanças futuras no preço do
-        // produto não afetam este item.
-        pedido.adicionarProduto(produto, request.getQuantidade());
+        // o preço atual do produto é copiado para o ItemPedido no momento da adição
+        pedidoService.adicionarItem(pedido, produto, request.getQuantidade());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new PedidoView(pedido));
     }
 
     @PatchMapping("/{id}/status")
     public ResponseEntity<?> alterarStatus(@PathVariable int id, @RequestBody StatusView request) {
-        Pedido pedido = bancoDeDados.buscarPedidoPorNumero(id);
+        Pedido pedido = pedidoService.buscarPorNumero(id);
 
         if (pedido == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -85,8 +89,7 @@ public class PedidoController {
                     .body("Status inválido. Use um de: " + STATUS_VALIDOS);
         }
 
-        pedido.alterarStatus(request.getStatus());
-
+        pedido = pedidoService.alterarStatus(pedido, request.getStatus());
         return ResponseEntity.ok(new PedidoView(pedido));
     }
 }

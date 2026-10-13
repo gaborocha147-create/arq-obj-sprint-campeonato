@@ -1,17 +1,22 @@
 package br.edu.insper.lojavirtual.models;
 
-public class Produto {
-    private int codigo;
-    private String nome;
-    private double preco;
-    private Categoria categoria;
+import jakarta.persistence.*;
 
-    public Produto(int codigo, String nome, double preco, Categoria categoria) {
-        this.codigo = codigo;
-        this.nome = nome;
-        this.preco = preco;
-        this.categoria = categoria;
-    }
+@Entity
+public class Produto {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int codigo;
+
+    @Column(nullable = false)
+    private String nome;
+
+    private double preco;
+
+    @ManyToOne
+    @JoinColumn(name = "id_categoria")
+    private Categoria categoria;
 
     public int getCodigo() {
         return codigo;
@@ -46,12 +51,10 @@ public class Produto {
     }
 
     public double aplicarDesconto(double percentual) {
-        return (1-percentual) * getPreco();
+        return (1 - percentual) * getPreco();
     }
 
     public double aumentarPreco(double percentual) {
-        return (1+percentual) * getPreco();
+        return (1 + percentual) * getPreco();
     }
-
-
 }
