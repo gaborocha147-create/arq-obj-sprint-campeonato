@@ -37,10 +37,13 @@ public class Campeonato {
     }
 
     public void adicionarPartida(Partida partida) {
+        partida.setCampeonato(this);
+        adicionarTime(partida.getTimeMandante());
+        adicionarTime(partida.getTimeVisitante());
         if (!partidas.contains(partida)) {
             partidas.add(partida);
-            adicionarTime(partida.getTimeMandante());
-            adicionarTime(partida.getTimeVisitante());
+
+
         }
     }
 

@@ -7,7 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class LojaApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(br.edu.insper.lojavirtual.LojaApplication.class, args);
+        SpringApplication app =
+                new SpringApplication(LojaApplication.class);
+        app.setAdditionalProfiles("lojavirtual");
+        app.run(args);
     }
-
 }

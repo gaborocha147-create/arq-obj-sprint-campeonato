@@ -38,6 +38,16 @@ public class CampeonatoController {
                 .body(CampeonatoView.fromModel(campeonato));
     }
 
+    @GetMapping
+    public List<CampeonatoView> listar() {
+        return campeonatoService.listar().stream().map(CampeonatoView::fromModel).toList();
+    }
+
+    @GetMapping("/{id}")
+    public CampeonatoView buscar(@PathVariable Long id) {
+        return CampeonatoView.fromModel(campeonatoService.buscarPorId(id));
+    }
+
     @GetMapping("/{id}/classificacao")
     public List<ClassificacaoView> classificacao(@PathVariable Long id) {
         Campeonato campeonato = campeonatoService.buscarPorId(id);

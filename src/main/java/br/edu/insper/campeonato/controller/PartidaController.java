@@ -43,6 +43,16 @@ public class PartidaController {
                 .body(PartidaView.fromModel(partida));
     }
 
+    @GetMapping
+    public java.util.List<PartidaView> listar() {
+        return partidaService.listar().stream().map(PartidaView::fromModel).toList();
+    }
+
+    @GetMapping("/{id}")
+    public PartidaView buscar(@PathVariable Long id) {
+        return PartidaView.fromModel(partidaService.buscarPorId(id));
+    }
+
     @PatchMapping("/{id}/placar")
     public PartidaView atualizarPlacar(@PathVariable Long id, @RequestBody PlacarView placar) {
         if (placar == null || placar.golMandante() < 0 || placar.golVisitante() < 0) {
