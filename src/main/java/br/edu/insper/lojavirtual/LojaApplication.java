@@ -7,10 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class LojaApplication {
 
     public static void main(String[] args) {
-        // banco separado do campeonato (data/loja)
-        SpringApplication.run(LojaApplication.class,
-                "--spring.datasource.url=jdbc:h2:file:./data/loja",
-                "--spring.application.name=lojavirtual");
+        SpringApplication app =
+                new SpringApplication(LojaApplication.class);
+        app.setAdditionalProfiles("lojavirtual");
+        app.run(args);
     }
-
 }

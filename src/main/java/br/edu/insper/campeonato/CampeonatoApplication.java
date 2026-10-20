@@ -7,7 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class CampeonatoApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CampeonatoApplication.class, args);
+		SpringApplication app =
+				new SpringApplication(CampeonatoApplication.class);
+		app.setAdditionalProfiles("campeonato");
+		app.run(args);
 	}
-
 }

@@ -16,6 +16,10 @@ public class CampeonatoService {
         return campeonatoRepository.save(campeonato);
     }
 
+    public java.util.List<Campeonato> listar() {
+        return campeonatoRepository.findAll();
+    }
+
     public Campeonato buscarPorId(Long id) {
         return campeonatoRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Campeonato não encontrado"));
     }
