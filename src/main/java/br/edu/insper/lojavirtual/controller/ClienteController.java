@@ -3,8 +3,8 @@ package br.edu.insper.lojavirtual.controller;
 import br.edu.insper.lojavirtual.models.Cliente;
 import br.edu.insper.lojavirtual.models.Pedido;
 import br.edu.insper.lojavirtual.service.ClienteService;
-import br.edu.insper.lojavirtual.utils.ValidarCpf;
 import br.edu.insper.lojavirtual.view.PedidoResumoView;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +21,7 @@ public class ClienteController {
     private ClienteService clienteService;
 
     @PostMapping
-    public ResponseEntity<?> cadastrar(@RequestBody Cliente cliente) {
-        if (!ValidarCpf.formatoValido(cliente.getCpf())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("CPF inválido. Use o formato 123.456.789-00 ou 12345678900.");
-        }
+    public ResponseEntity<?> cadastrar(@Valid @RequestBody Cliente cliente) {
 
         if (clienteService.buscarPorCpf(cliente.getCpf()) != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT)

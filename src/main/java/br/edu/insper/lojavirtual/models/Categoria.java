@@ -2,6 +2,7 @@ package br.edu.insper.lojavirtual.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ public class Categoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int codigo;
 
+    @NotBlank(message = "Nome da categoria é obrigatório")
     @Column(nullable = false)
     private String nome;
 

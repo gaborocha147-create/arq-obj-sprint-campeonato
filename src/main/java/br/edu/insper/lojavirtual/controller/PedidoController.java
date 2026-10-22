@@ -7,19 +7,15 @@ import br.edu.insper.lojavirtual.service.ClienteService;
 import br.edu.insper.lojavirtual.service.PedidoService;
 import br.edu.insper.lojavirtual.service.ProdutoService;
 import br.edu.insper.lojavirtual.view.*;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.List;
-
 @RestController
 @RequestMapping("/pedidos")
 public class PedidoController {
-
-    private static final List<String> STATUS_VALIDOS = Arrays.asList("ABERTO", "PAGO", "CANCELADO");
 
     @Autowired
     private PedidoService pedidoService;
@@ -31,7 +27,7 @@ public class PedidoController {
     private ProdutoService produtoService;
 
     @PostMapping
-    public ResponseEntity<?> criar(@RequestBody NovoPedidoView request) {
+    public ResponseEntity<?> criar(@Valid @RequestBody NovoPedidoView request) {
         Cliente cliente = clienteService.buscarPorCpf(request.getCpfCliente());
 
         if (cliente == null) {
@@ -44,7 +40,7 @@ public class PedidoController {
     }
 
     @PostMapping("/{id}/itens")
-    public ResponseEntity<?> adicionarItem(@PathVariable int id, @RequestBody NovoItemPedidoView request) {
+    public ResponseEntity<?> adicionarItem(@PathVariable int id, @Valid @RequestBody NovoItemPedidoView request) {
         Pedido pedido = pedidoService.buscarPorNumero(id);
 
         if (pedido == null) {
@@ -64,11 +60,6 @@ public class PedidoController {
                     .body("Produto " + request.getProdutoCodigo() + " não encontrado.");
         }
 
-        if (request.getQuantidade() <= 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Quantidade deve ser maior que zero.");
-        }
-
         // o preço atual do produto é copiado para o ItemPedido no momento da adição
         pedidoService.adicionarItem(pedido, produto, request.getQuantidade());
 
@@ -76,17 +67,12 @@ public class PedidoController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<?> alterarStatus(@PathVariable int id, @RequestBody StatusView request) {
+    public ResponseEntity<?> alterarStatus(@PathVariable int id, @Valid @RequestBody StatusView request) {
         Pedido pedido = pedidoService.buscarPorNumero(id);
 
         if (pedido == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Pedido " + id + " não encontrado.");
-        }
-
-        if (!STATUS_VALIDOS.contains(request.getStatus())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Status inválido. Use um de: " + STATUS_VALIDOS);
         }
 
         pedido = pedidoService.alterarStatus(pedido, request.getStatus());

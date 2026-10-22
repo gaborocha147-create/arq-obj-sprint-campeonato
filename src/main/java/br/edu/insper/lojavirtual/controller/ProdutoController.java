@@ -5,6 +5,7 @@ import br.edu.insper.lojavirtual.models.Produto;
 import br.edu.insper.lojavirtual.service.CategoriaService;
 import br.edu.insper.lojavirtual.service.ProdutoService;
 import br.edu.insper.lojavirtual.view.NovoProdutoView;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class ProdutoController {
     private CategoriaService categoriaService;
 
     @PostMapping
-    public ResponseEntity<?> cadastrar(@RequestBody NovoProdutoView request) {
+    public ResponseEntity<?> cadastrar(@Valid @RequestBody NovoProdutoView request) {
         Categoria categoria = categoriaService.buscarPorCodigo(request.getCategoriaId());
 
         if (categoria == null) {
